@@ -176,9 +176,93 @@ end
 
 def jugar inicio, jugador1, jugador2, puntos, rondas
 	inicio.append do
-		para jugador1
-		para jugador2
-		para puntos
-		para rondas
+		background "versus.jpg"
+
+		partida = flow do 
+			col1 = flow :width => '50%', :top => '500', :left => '15' do 
+				button "Piedra" do
+					inicio.append do
+						stack :top => '200', :left => '40', :width => '200', :height => '300' do
+							piedra = image "piedra2.png"
+						end
+					end
+				end
+
+				button "Papel" do
+					inicio.append do
+						stack :top => '200', :left => '40', :width => '200', :height => '300' do
+							papel = image "papel2.png"
+						end
+					end
+				end
+
+				button "Tijeras" do
+					inicio.append do
+						stack :top => '200', :left => '40', :width => '200', :height => '300' do
+							tijeras = image "tijeras2.png"
+						end
+					end
+				end
+
+				button "Lagarto" do
+					inicio.append do
+						stack :top => '200', :left => '40', :width => '200', :height => '300' do
+							lagarto = image "lizard2.png"
+						end
+					end
+				end
+
+				button "Spock" do
+					inicio.append do
+						stack :top => '200', :left => '40', :width => '200', :height => '300' do
+							spock = image "spock2.png"
+						end
+					end
+				end
+
+			end
+
+			flow :width => '50%', :top => '500', :left => '530' do 
+				button "Piedra" do
+					inicio.append do
+						stack :top => '200', :left => '580', :width => '200', :height => '300' do
+							piedra = image "piedra.png"
+						end
+					end
+				end
+
+				button "Papel" do
+					inicio.append do
+						stack :top => '200', :left => '580', :width => '200', :height => '300' do
+							piedra = image "papel.png"
+						end
+					end
+				end
+
+				button "Tijeras" do
+					inicio.append do
+						stack :top => '200', :left => '580', :width => '200', :height => '300' do
+							piedra = image "tijeras.png"
+						end
+					end
+				end
+
+				button "Lagarto" do
+					inicio.append do
+						stack :top => '200', :left => '580', :width => '200', :height => '300' do
+							piedra = image "lizard.png"
+						end
+					end
+				end
+
+				button "Spock" do
+					inicio.append do
+						stack :top => '200', :left => '580', :width => '200', :height => '300' do
+							piedra = image "spock.png"
+						end
+					end
+				end
+			end
+		end
 	end
 end

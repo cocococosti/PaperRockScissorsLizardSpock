@@ -115,4 +115,47 @@ class Lagarto < Jugada
 		end
 		resultado
 	end
-end							
+end	
+
+class Estrategia
+	attr_accessor :nombre, :patron
+
+	def prox(m)
+		if m.jugada == "papel"
+			@patron = Papel.new("papel")
+		elsif m.jugada == "piedra"
+			@patron = Piedra.new("piedra")
+		elsif m.jugada == "tijeras"
+			@patron = Tijeras.new("tijeras")
+		elsif m.jugada == "spock"
+			@patron = Spock.new("spock")
+		elsif m.jugada == "lagarto"
+			@patron = Lagarto.new("lagarto")
+		else
+			raise "Error"
+		end
+		@patron				
+	end
+
+	def to_s
+		s = "El jugador " + @nombre + "con la jugada " + @patron.to_s
+	end
+
+	def reset
+
+	end		
+end		
+
+
+class Manual < Estrategia
+
+	def get_jugada
+		j1 = gets
+		j1 = j1.chomp
+		x1 = Jugada.new(j1)
+		prox(x1)
+	end
+
+
+	
+end									

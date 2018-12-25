@@ -130,11 +130,13 @@ class Lagarto < Jugada
 end	
 
 class Estrategia
-	attr_accessor :nombre, :patron
+	attr_accessor :nombre, :patron, :semilla
 
 	def initialize (nombre, patron)
 		@nombre = nombre
 		@patron = patron
+		@semilla = 42
+		@random = Random.new(@semilla)
 	end
 
 	def getPatron
@@ -192,6 +194,71 @@ class Sesgada < Estrategia
 	def to_s
 		s = "El jugador " + @nombre + " con la estrategia Sesgada"
 	end
+end
+
+class Pensar < Estrategia
+	def initialize (nombre, patron)
+		super(nombre, patron)
+		@r = 0
+		@p = 0
+		@t = 0
+		@l = 0
+		@s = 0
+	end
+
+	def prox m
+		if m.to_s == "papel"
+			@p += 1
+		elsif m.to_s == "piedra"
+			@r += 1
+		elsif m.to_s == "tijeras"
+			@t += 1
+		elsif m.to_s == "spock"
+			@s += 1
+		elsif m.to_s == "lagarto"
+			@l += 1
+		elsif m.to_s == ""
+			# no hacer nada
+		else
+			raise "Error."
+		end
+
+		max = @p + @r + @t + @l + @s -1
+		if max <= 0
+			max = 0
+			n = 0
+		else
+
+			
+			n = @random.rand(max)
+		end
+
+		puts "EL NUM ES #{n}"
+
+		if (n >= 0 and n < @r) or (n == 0)
+			mano = Piedra.new("piedra")
+		elsif n >= @r and n < @r+@p 
+			mano = Papel.new("papel")
+		elsif n >= @r+@p and n < @r+@p+@t
+			mano = Tijeras.new("tijeras")
+		elsif n >= @r+@p+@t and n < @r+@p+@t+@l
+			mano = Lagarto.new("lagarto")
+		elsif n >= @r+@p+@t+@l and n < @r+@p+@t+@l+@s
+			mano = Spock.new("spock")
+		end
+
+		mano			
+			
+	end
+
+	def reset
+		@r = 0
+		@p = 0
+		@t = 0
+		@l = 0
+		@s = 0
+	end
+
 end
 
 
@@ -270,6 +337,10 @@ class Partida
 			mano1 = Piedra.new "piedra"
 		elsif s1.getPatron == "uniforme"  or s1.getPatron == "sesgada"
 			mano1 = s1.prox
+		elsif s1.getPatron == "pensar"
+			mano1 = s1.prox ""
+
+			
 		end
 
 		# Obtenemos proxima jugada del jugador 2
@@ -277,6 +348,8 @@ class Partida
 			mano2 = s2.prox mano1
 		elsif s2.getPatron == "uniforme"  or s2.getPatron == "sesgada"
 			mano2 = s2.prox
+		elsif s2.getPatron == "pensar"
+			mano2 = s2.prox mano1
 		end
 
 		puts s1.to_s
@@ -284,6 +357,8 @@ class Partida
 
 		puts s2.to_s
 		puts mano2.to_s
+
+		@resultado["rondas"] += 1
 
 		# Obtenemos el puntaje de la ronda
 		puntaje = mano1.puntos(mano2)
@@ -302,6 +377,8 @@ class Partida
 				mano1 = s1.prox mano2
 			elsif s1.getPatron == "uniforme"  or s1.getPatron == "sesgada"
 				mano1 = s1.prox
+			elsif s1.getPatron == "pensar"
+				mano1 = s1.prox mano2
 			end
 
 			# Obtenemos proxima jugada del jugador 2
@@ -309,6 +386,8 @@ class Partida
 				mano2 = s2.prox mano1
 			elsif s2.getPatron == "uniforme"  or s2.getPatron == "sesgada"
 				mano2 = s2.prox
+			elsif s2.getPatron == "pensar"
+				mano2 = s2.prox mano1
 			end
 
 			puts s1.to_s
@@ -349,6 +428,7 @@ class Partida
 			mano2 = s2.prox
 		end
 
+		@resultado["rondas"] += 1
 		# Obtenemos el puntaje de la ronda
 		puntaje = mano1.puntos(mano2)
 
@@ -431,6 +511,19 @@ j2 = Sesgada.new "Juan", "sesgada", pesos
 m = Partida.new Hash["Ana" => j1, "Juan" => j2]
 
 r = m.rondas(3)
+
+puts r['Ana']
+puts r['Juan']
+puts r['rondas']
+
+puts "################"
+
+j1 = Pensar.new "Ana", "pensar"
+j2 = Uniforme.new "Juan", "uniforme", [piedra, papel, tijeras, lagarto, spock]
+
+m = Partida.new Hash["Ana" => j1, "Juan" => j2]
+
+r = m.rondas(20)
 
 puts r['Ana']
 puts r['Juan']

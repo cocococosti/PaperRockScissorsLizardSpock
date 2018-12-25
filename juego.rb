@@ -13,13 +13,30 @@ def sum_of_weights(weighted)
 	weighted.inject(0) { |sum, (item, weight)| sum + weight }
 end
 
-class Jugada
 
+##
+# Superclase para representar la jugada a seleccionar por el usuario.
+# Las clases que heredan esta superclase son:
+# * Piedra
+# * Papel
+# * Tijeras
+# * Lagarto
+# * Spock 
+
+class Jugada
+	##
+	# Representa la forma de la mano escogida por el usuario. 
 	attr_reader :jugada
+
+	##
+	# Crea una nueva jugada a partir del string ingresado como argumento
 
 	def initialize(mano)
 		@jugada = mano
 	end
+	
+	##
+	# Mostrar la mano como string
 
 	def to_s
 		s = @jugada
@@ -28,8 +45,19 @@ class Jugada
 
 end
 
+##
+# Subclase para representar la jugada Piedra
+
 class Piedra < Jugada
 
+	## 
+	# Determina el resultado de la ronda dependiendo de la jugada realizada por el otro jugador.  
+	# Devuelve [1,0] si la piedra gana a la otra jugada  
+	# Devuelve [1,0] si la piedra pierde contra la otra jugada  
+	# Devuelve [0,0] si ambas jugadas son piedra  
+	# Levanta una excepcion si el movimiento no es valido.  
+	# [Argumentos ] j (jugada)  
+	
 	def puntos(j)
 		if j.to_s == "tijeras"
 			resultado = [1,0]
@@ -48,8 +76,18 @@ class Piedra < Jugada
 	end
 end
 
+##
+# Subclase para representar la jugada Papel
 
 class Papel < Jugada
+
+	## 
+	# Determina el resultado de la ronda dependiendo de la jugada realizada por el otro jugador.  
+	# Devuelve [1,0] si el papel gana a la otra jugada  
+	# Devuelve [1,0] si el papel pierde contra la otra jugada  
+	# Devuelve [0,0] si ambas jugadas son papel  
+	# Levanta una excepcion si el movimiento no es valido.  
+	# [Argumentos ] j (jugada) 
 
 	def puntos(j)
 		if j.to_s == "piedra"
@@ -69,7 +107,18 @@ class Papel < Jugada
 	end
 end		
 
+##
+# Subclase para representar la jugada Tijeras
+
 class Tijeras < Jugada
+
+	## 
+	# Determina el resultado de la ronda dependiendo de la jugada realizada por el otro jugador.
+	# Devuelve [1,0] si las tijeras ganan a la otra jugada
+	# Devuelve [1,0] si las tijeras pierden contra la otra jugada
+	# Devuelve [0,0] si ambas jugadas son tijeras
+	# Levanta una excepcion si el movimiento no es valido.
+	# [Argumentos ] j (jugada) 
 
 	def puntos(j)
 		if j.to_s == "papel"
@@ -89,7 +138,18 @@ class Tijeras < Jugada
 	end
 end	
 
+##
+# Subclase para representar la jugada Spock
+
 class Spock < Jugada
+
+	## 
+	# Determina el resultado de la ronda dependiendo de la jugada realizada por el otro jugador.  
+	# Devuelve [1,0] si el spock gana a la otra jugada  
+	# Devuelve [1,0] si el spock pierde contra la otra jugada  
+	# Devuelve [0,0] si ambas jugadas son spock  	
+	# Levanta una excepcion si el movimiento no es valido.
+	# [Argumentos ] j (jugada) 
 
 	def puntos(j)
 		if j.to_s == "piedra"
@@ -109,7 +169,18 @@ class Spock < Jugada
 	end
 end
 
+##
+# Subclase para representar la jugada Lagarto
+
 class Lagarto < Jugada
+
+	## 
+	# Determina el resultado de la ronda dependiendo de la jugada realizada por el otro jugador.  
+	# Devuelve [1,0] si el lagarto gana a la otra jugada  
+	# Devuelve [1,0] si el lagarto pierde contra la otra jugada  
+	# Devuelve [0,0] si ambas jugadas son lagarto  
+	# Levanta una excepcion si el movimiento no es valido.
+	# [Argumentos ] j (jugada) 
 
 	def puntos(j)
 		if j.to_s == "papel"
@@ -129,8 +200,29 @@ class Lagarto < Jugada
 	end
 end	
 
+
+##
+# Clase para representar a los jugadores, cuenta con las especializaciones:
+# * Manual
+# * Uniforme
+# * Sesgada
+# * Copiar
+# * Pensar
+
 class Estrategia
-	attr_accessor :nombre, :patron, :semilla
+	
+	# Nombre del jugador 
+	attr_accessor :nombre 			  
+	# jugadas
+	attr_accessor :patron
+	# Constante para ser usada en generador de numeros al azar
+	attr_accessor :semilla
+
+
+	##
+	# Constructor de la clase
+	# [Argumentos ] nombre, patron
+	# La constante semilla tiene el valor 42
 
 	def initialize (nombre, patron)
 		@nombre = nombre
@@ -139,9 +231,16 @@ class Estrategia
 		@random = Random.new(@semilla)
 	end
 
+	##
+	# get del atributo patron
+
 	def getPatron
 		@patron
 	end
+
+	##
+	# to String de la clase  
+	# Devuelve el nombre del jugador
 
 	def to_s
 		s = "El jugador " + @nombre
@@ -149,9 +248,21 @@ class Estrategia
 	
 end		
 
-class Uniforme < Estrategia
+##
+# Especializacion de Estrategia, sigue una distribucion uniforme a partir de un arreglo de jugadas. 
 
-	attr_accessor :nombre, :patron, :jugadas
+class Uniforme < Estrategia
+	
+	# Nombre del jugador
+	attr_accessor :nombre
+	# jugada
+	attr_accessor :patron
+	# arreglo de jugadas
+	attr_accessor :jugadas
+
+	##
+	# Constructor que recibe nombre, patron y jugadas  
+	# Levanta una excepcion si el arreglo es vacio y elimina duplicados
 
 	def initialize (nombre, patron, jugadas)
 		@nombre = nombre
@@ -163,19 +274,39 @@ class Uniforme < Estrategia
 		@jugadas = jugadas.uniq
 	end
 
+
+	## 
+	# Proxima jugada a realizar. 
+
 	def prox
 		@jugadas.sample
 	end
+
+	##
+	# to String 
+	# Devuelve el nombre del jugados con la estrategia Uniforme
 
 	def to_s
 		s = "El jugador " + @nombre + " con la estrategia Uniforme"
 	end
 end
 
+
+##
+# Especializacion de Estrategia, el metodo asociado recibe un mapa de movimientos posibles y sus probabilidades asociadas, 
+# de modo que cada jugada use una distribución sesgada de esa forma
+
 class Sesgada < Estrategia
+	# Nombre
+	attr_accessor :nombre
+	# jugada
+	attr_accessor :patron
+	# Mapa de jugadas
+	attr_accessor :jugadas
 
-	attr_accessor :nombre, :patron, :jugadas
-
+	## 
+	# Constructor que recibe el nombre, la jugada y el mapa de jugadas
+	
 	def initialize (nombre, patron, jugadas)
 		@nombre = nombre
 		@patron = patron
@@ -185,18 +316,36 @@ class Sesgada < Estrategia
 
 		@jugadas = jugadas
 	end
-
+	
+	##
+	# Selecciona la proxima jugada de forma aleatoria con la funcion random_weighted
+	
 	def prox
 		random_weighted @jugadas
 		
 	end
+	
+	##
+	# to String  
+	# Devuelve el nombre del jugador con la estrategia Sesgada
 
 	def to_s
 		s = "El jugador " + @nombre + " con la estrategia Sesgada"
 	end
 end
 
+##
+# Especializacion de Estrategia, depende de jugadas anteriores
+
 class Pensar < Estrategia
+
+	##
+	# Constructor de la clase
+	# Recibe nombre y patron de la superclase  
+	# Inicializa en 0 a las variables r,p,t,l,s que representan 
+	# la cantidad de veces que el jugador ha utilizado piedra, papel, tijeras
+	# lagarto, spock, respectivamente.
+
 	def initialize (nombre, patron)
 		super(nombre, patron)
 		@r = 0
@@ -205,6 +354,10 @@ class Pensar < Estrategia
 		@l = 0
 		@s = 0
 	end
+
+	##
+	# Actualiza el valor de la variables r,p,t,l,s dependiendo de la
+	# jugada realizada.
 
 	def prox m
 		if m.to_s == "papel"
@@ -251,6 +404,9 @@ class Pensar < Estrategia
 			
 	end
 
+	##
+	# Resetea los valores de las variables r,p,s,l,s a 0
+
 	def reset
 		@r = 0
 		@p = 0
@@ -261,8 +417,13 @@ class Pensar < Estrategia
 
 end
 
+##
+# Especializacion de Estrategia, recibe las jugadas de forma Manual
+# (una por una)
 
 class Manual < Estrategia
+	##
+	# Devuelve los objetos que representan las jugadas
 
 	def prox(m)
 		if m == "papel"
@@ -280,11 +441,18 @@ class Manual < Estrategia
 		end
 	end
 
-
+	##
+	# to String    
+	# Devuelve el nombre del jugador con la estrategia manual
 	def to_s
 		s = "El jugador " + @nombre + " con de la estrategia Manual"
 	end
 end
+
+
+##
+# Especializacion de Estrategia, donde se copia la jugada del jugador 
+# 2 a partir de la segunda ronda
 
 class Copiar < Estrategia
 
@@ -314,8 +482,24 @@ class Copiar < Estrategia
 	
 end									
 
+##
+# Clase donde ocurre el juego con dos participantes
+
 class Partida
-	attr_accessor :j1, :j2, :s1, :s2, :resultado
+	# Nombre del jugador 1
+	attr_accessor :j1
+	# Nombre del jugador 2
+	attr_accessor :j2
+	# estrategia del jugador 1
+	attr_accessor :s1
+	# estrategia del jugador 2
+	attr_accessor :s2
+	# mapa de resultados
+	attr_accessor :resultado
+
+	##
+	# Constructor de la clase 
+	# 
 
 	def initialize partida
 		# Nombres de los jugadores
@@ -330,6 +514,9 @@ class Partida
 		@resultado = Hash[j1 => 0, j2 => 0, "rondas" => 0]
 	end
 
+	##
+	# Completar el numero de rondas indicadas 
+	# y actualiza los resultados en el mapa
 
 	def rondas (n)
 		# Obtenemos proxima jugada del jugador 1
@@ -409,6 +596,10 @@ class Partida
 		@resultado
 	end
 
+	##
+	# Alcanzar el numero de puntos indicadas 
+	# y actualiza los resultados en el mapa
+
 	def alcanzar (n)
 
 		fin = false
@@ -475,6 +666,10 @@ class Partida
 
 		@resultado
 	end
+
+	##
+	# Resetear mapa de resultados a 0 en sus entradas
+	# 
 
 	def reset 
 		@resultado["rondas"] = 0
